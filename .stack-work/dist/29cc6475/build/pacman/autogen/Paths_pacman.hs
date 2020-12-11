@@ -29,12 +29,12 @@ version :: Version
 version = Version [0,1,0,0] []
 bindir, libdir, dynlibdir, datadir, libexecdir, sysconfdir :: FilePath
 
-bindir     = "C:\\Users\\FedericoBergagna\\Desktop\\sanitized_pacman\\.stack-work\\install\\d5de694d\\bin"
-libdir     = "C:\\Users\\FedericoBergagna\\Desktop\\sanitized_pacman\\.stack-work\\install\\d5de694d\\lib\\x86_64-windows-ghc-8.8.4\\pacman-0.1.0.0-GiqU9MHJIzeHXbIJFNSpWV-pacman"
-dynlibdir  = "C:\\Users\\FedericoBergagna\\Desktop\\sanitized_pacman\\.stack-work\\install\\d5de694d\\lib\\x86_64-windows-ghc-8.8.4"
-datadir    = "C:\\Users\\FedericoBergagna\\Desktop\\sanitized_pacman\\.stack-work\\install\\d5de694d\\share\\x86_64-windows-ghc-8.8.4\\pacman-0.1.0.0"
-libexecdir = "C:\\Users\\FedericoBergagna\\Desktop\\sanitized_pacman\\.stack-work\\install\\d5de694d\\libexec\\x86_64-windows-ghc-8.8.4\\pacman-0.1.0.0"
-sysconfdir = "C:\\Users\\FedericoBergagna\\Desktop\\sanitized_pacman\\.stack-work\\install\\d5de694d\\etc"
+bindir     = "C:\\Users\\FedericoBergagna\\Desktop\\pacman\\.stack-work\\install\\d5de694d\\bin"
+libdir     = "C:\\Users\\FedericoBergagna\\Desktop\\pacman\\.stack-work\\install\\d5de694d\\lib\\x86_64-windows-ghc-8.8.4\\pacman-0.1.0.0-GiqU9MHJIzeHXbIJFNSpWV-pacman"
+dynlibdir  = "C:\\Users\\FedericoBergagna\\Desktop\\pacman\\.stack-work\\install\\d5de694d\\lib\\x86_64-windows-ghc-8.8.4"
+datadir    = "C:\\Users\\FedericoBergagna\\Desktop\\pacman\\.stack-work\\install\\d5de694d\\share\\x86_64-windows-ghc-8.8.4\\pacman-0.1.0.0"
+libexecdir = "C:\\Users\\FedericoBergagna\\Desktop\\pacman\\.stack-work\\install\\d5de694d\\libexec\\x86_64-windows-ghc-8.8.4\\pacman-0.1.0.0"
+sysconfdir = "C:\\Users\\FedericoBergagna\\Desktop\\pacman\\.stack-work\\install\\d5de694d\\etc"
 
 getBinDir, getLibDir, getDynLibDir, getDataDir, getLibexecDir, getSysconfDir :: IO FilePath
 getBinDir = catchIO (getEnv "pacman_bindir") (\_ -> return bindir)

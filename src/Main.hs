@@ -33,13 +33,13 @@ main = do
     black
     refreshRate
     (initWorld gen)
-    drawingFunc 
+    drawWorld 
     inputHandler
-    updateFunc
+    updateWorld
 
 -- Function that draws the world, used in play
-drawingFunc :: World -> Picture
-drawingFunc world 
+drawWorld :: World -> Picture
+drawWorld world 
   | (worldResult world ) == GameLost =  Pictures [translate 0 50 (Scale 0.12 0.25 (Color white (Text "Game Over"))), (Scale 0.12 0.25 (Color white (Text "Score"))), translate 0 (-50) (Scale 0.12 0.25 (Color white (Text (show (score world)) )))]
   | (worldResult world ) == GameWon = Pictures [translate 0 50 (Scale 0.12 0.25 (Color white (Text "You won!"))),(Scale 0.12 0.25 (Color white (Text "Score"))), translate 0 (-50) (Scale 0.12 0.25 (Color white (Text (show (score world)) )))]
   |otherwise = Pictures (((pointPic 6.0) <$> powerUps world)++((pointPic 3.0) <$> points world) ++ (enemyPic <$> enemies world) ++ [mapGrid, playerMarker, translate 250 200 (Scale 0.12 0.25 (Color white (Text "Score"))), translate 250 150 (Scale 0.12 0.25 (Color white (Text (show (score world)) )))] )
@@ -94,8 +94,8 @@ inputHandler event w
 ----------------------------------------------------------------------------------      
 
 -- Function that updates the world, used in play
-updateFunc :: Float -> World -> World
-updateFunc _ w
+updateWorld :: Float -> World -> World
+updateWorld _ w
   | (worldResult w) /= GameInProgress = w
   | enemyCollision (enemies w) (playerLocation w) = moveFunction (updateTimers (pickUps (handleCollision w)))
   | canTeleport (playerLocation w) (moved w) = updateTimers w { playerLocation = teleport (playerLocation w), moved = False}
