@@ -40,9 +40,9 @@ main = do
 -- Function that draws the world, used in play
 drawWorld :: World -> Picture
 drawWorld world 
-  | (worldResult world ) == GameLost =  Pictures [translate 0 50 (Scale 0.12 0.25 (Color white (Text "Game Over"))), (Scale 0.12 0.25 (Color white (Text "Score"))), translate 0 (-50) (Scale 0.12 0.25 (Color white (Text (show (score world)) )))]
+  | (worldResult world ) == GameLost =  Pictures [translate (-50) 50 (Scale 0.12 0.25 (Color white (Text "Game Over"))), translate (-30) 0 (Scale 0.12 0.25 (Color white (Text "Score"))), translate (-20) (-50) (Scale 0.12 0.25 (Color white (Text (show (score world)) ))), translate (-100) (-100) (Scale 0.12 0.25 (Color white (Text "Press ENTER to try again!")))]
   | (worldResult world ) == GameWon = Pictures [translate 0 50 (Scale 0.12 0.25 (Color white (Text "You won!"))),(Scale 0.12 0.25 (Color white (Text "Score"))), translate 0 (-50) (Scale 0.12 0.25 (Color white (Text (show (score world)) )))]
-  |otherwise = Pictures (((pointPic 6.0) <$> powerUps world)++((pointPic 3.0) <$> points world) ++ (enemyPic <$> enemies world) ++ [mapGrid, playerMarker, translate 250 200 (Scale 0.12 0.25 (Color white (Text "Score"))), translate 250 150 (Scale 0.12 0.25 (Color white (Text (show (score world)) )))] )
+  |otherwise = Pictures (((pointPic 6.0) <$> powerUps world)++((pointPic 3.0) <$> points world) ++ (enemyPic <$> enemies world) ++ [mapGrid, playerMarker, translate 250 200 (Scale 0.12 0.25 (Color white (Text "Score"))), translate 250 150 (Scale 0.12 0.25 (Color white (Text (show (score world)) ))),translate 250 100 (Scale 0.12 0.25 (Color white (Text "Lives"))), translate 250 50 (Scale 0.12 0.25 (Color white (Text (show (lives world)) )))] )
   where
     playerPos = center (locationToCoords (playerLocation world))
     playerMarker = drawAt playerPos yellow (circleSolid 10)
@@ -84,7 +84,9 @@ drawWorld world
 -- Function that handles user input, used in play
 inputHandler :: Event -> World -> World
 inputHandler event w 
-    | ((worldResult w) /= GameInProgress) = w
+    | ((worldResult w) /= GameInProgress) =  case event of
+      (EventKey (SpecialKey KeyEnter) Down _ _) -> initWorld (randomGen w)
+      _ -> w
     | otherwise = case event of
       (EventKey (SpecialKey KeyUp) Down _ _) -> w {moved = True, bufferedMove = UpMove }
       (EventKey (SpecialKey KeyDown) Down _ _) -> w {moved = True, bufferedMove = DownMove }
@@ -133,8 +135,12 @@ enemyCollision (e:es) player = if (((enemyLocation e) == player) && not (isDead 
 -- Handle collisions
 handleCollision :: World -> World
 handleCollision w 
-  | (vulnerability w) = w {enemies = map (killEnemy (playerLocation w)) (enemies w), score = (score w) + 50} 
-  | otherwise = w {worldResult = GameLost}  
+  | (vulnerability w) = w {enemies = map (killEnemy (playerLocation w)) (enemies w), score = (score w) + 50}
+  | (hasLives w) = w {lives = (lives w)-1, playerLocation = (9,5), enemies = [Enemy (7,13) red False False 0 True,Enemy (11,13) orange False False 0 True] } 
+  | otherwise = w {worldResult = GameLost} 
+
+hasLives :: World -> Bool
+hasLives w = (lives w) > 1 
 
 ----------------------------------------  
 
@@ -239,11 +245,12 @@ posibleLocations loc w =
         (Neighbour loc) -> loc
         _ -> (0,0)
       in filter ((/=) (0,0)) [maybeUpLoc, maybeRightLoc, maybeDownLoc, maybeLeftLoc]
+      
 ----------------------------------------------------------------------------------------------------
 
 -- Creates new world from scratch
 initWorld :: StdGen -> World
-initWorld gen = (World (9, 5) pacMap GameInProgress False UpMove [Enemy (7,13) red False False 0 True,Enemy (11,13) orange False False 0 True] False 0 0 pointMap [(1,5),(17,5),(1,18),(17,18)] gen True)
+initWorld gen = (World (9, 5) pacMap GameInProgress False UpMove [Enemy (7,13) red False False 0 True,Enemy (11,13) orange False False 0 True] False 0 0 pointMap [(1,5),(17,5),(1,18),(17,18)] gen True 3)
 -------------------------------------------------------------------------------------------------------
 
 -- Helper Functions

@@ -48,6 +48,7 @@ data World = World
   , powerUps :: [Location]
   , randomGen :: StdGen
   , pacTurn :: Bool
+  , lives :: Int
   }
 
 data MoveDirection = UpMove | DownMove | LeftMove | RightMove
